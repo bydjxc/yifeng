@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yifeng.yfcore.mapper.UserMapper" >
+    <select id="findUserById" parameterType="int" resultType="yfUser">
+        SELECT * from yf_user where id=#{id}
+    </select>
+    <select id="findUserListByName" resultType="yfUser">
+        SELECT * from yf_user
+    </select>
+    <!-- 插入并返回自增主键 -->
+    <insert id="insertUser" parameterType="yfUser" useGeneratedKeys="true" keyProperty="id">
+        insert INTO yf_user(name, age, addr) VALUES (#{name},#{age},#{addr})
+    </insert>
+    <update id="updateUser" parameterType="yfUser">
+        UPDATE yf_user set name=#{name},age=#{age},addr=#{addr}
+        where id=#{id}
+    </update>
+    <delete id="deleteUserById" parameterType="int">
+        delete from yf_user where id=#{id}
+    </delete>
+
+</mapper>
