@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <script src="jquery-3.3.1.min.js"></script>
+</head>
+<body>
+        文件上传
+    <form action="" id="queryForm" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="file">
+        <input type="text" name="name" id="name">
+        <input type="text" name="name" id="pass">
+
+        <input type="button" value="确定" onclick="saveUser2()">
+        <input type="button" value="下载" onclick="postDownloadFile()">
+        <input type="button" value="删除" onclick="deleteFile()">
+    </form>
+    <script>
+        function saveUser2() {
+            var name = $("#name").val().trim();
+            var file = document.getElementById("file").files[0];
+            var formData = new FormData();
+            formData.append('name', name);
+            formData.append('file', file);
+
+            $.ajax({
+                url: "/file/upload",
+                type: "post",
+                data: formData,
+                contentType: false,
+                processData: false,
+                mimeType: "multipart/form-data",
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+        function saveUser() {
+            var id = $("#id").val().trim();
+            var uname = $("#uname").val().trim();
+            var pwd = $("#pwd").val().trim();
+            var file = document.getElementById("file").files[0];
+
+            //原生ajax实现文件上传
+            var formData = new FormData();
+            formData.append("uname", uname); // 可以增加表单数据
+            formData.append("id", id);
+            formData.append("pwd", pwd);
+            if (file) {
+                formData.append("file", file);
+            }
+
+            //得到xhr对象
+            var xhr = null;
+            if (XMLHttpRequest) {
+                xhr = new XMLHttpRequest();
+            } else {
+                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+
+            xhr.open("post", "/home/about", true);//设置提交方式，url，异步提交
+            xhr.onload = function () {
+                var data = xhr.responseText;    //得到返回值
+                alert(data);
+            }
+            xhr.send(formData);
+        }
+        function getDownloadFile() {
+            var groupName = 'group1';
+            var fileName = 'M00/00/00/rBAABFyusp6AFThWAAB8ALTBKQo632.xls';
+            window.location.href = '/file/download?groupName='+groupName+'&fileName='+fileName;
+        }
+        function postDownloadFile() {
+            var groupName = 'group1';
+            var fileName = 'M00/00/00/rBAABFyup6SAQuIbAAC6fCu6sb4415.jpg';
+            try {
+                var exportForm = $("<form action='/file/download' method='post'></form>");
+                exportForm.append("<input type='hidden' name='groupName' value='"+groupName+"'/>");
+                exportForm.append("<input type='hidden' name='fileName' value='"+fileName+"'/>");
+                $(document.body).append(exportForm);
+                exportForm.submit();
+            } catch (e) {
+                console.log(e);
+            } finally {
+                exportForm.remove();
+            }
+        }
+        function deleteFile() {
+            var groupName = 'group1';
+            var fileName = 'M00/00/00/rBAABFyupUCAT7-7AAC6fCu6sb4511.jpg';
+            $.ajax({
+                url: "/file/delete",
+                type: "post",
+                data: {"groupName":groupName, "fileName":fileName},
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
